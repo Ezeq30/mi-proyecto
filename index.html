@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Apuestas</title>
+    <title>Minimos Especiales</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <header>
-            <h1>🏇 Gestión de Apuestas</h1>
+            <h1>🏇 Minimos Especiales</h1>
         </header>
 
         <div class="main-content">
@@ -47,37 +49,37 @@
             </div>
 
             <div class="table-section">
-            <div class="table-header">
-                <h2>Apuestas Registradas</h2>
-                <div class="header-buttons">
-                    <button id="btnExportarPDF" class="btn-exportar" onclick="exportarAPDF()">
-                        📄 Guardar en PDF
-                    </button>
-                    <button id="btnEliminarTodo" class="btn-eliminar-todo" onclick="eliminarTodo()">
-                        🗑️ Eliminar Todo
-                    </button>
+                <div class="table-header">
+                    <h2>Apuestas Registradas</h2>
+                    <div class="header-buttons">
+                        <button id="btnExportarPDF" class="btn-exportar" onclick="exportarAPDF()">
+                            📄 Guardar en PDF
+                        </button>
+                        <button id="btnEliminarTodo" class="btn-eliminar-todo" onclick="eliminarTodo()">
+                            🗑️ Eliminar Todo
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="tablaApuestas">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tipo de Apuesta</th>
+                                <th>Monto</th>
+                                <th>Carreras</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaBody">
+                            <!-- Las apuestas se agregarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                    <div id="mensajeVacio" class="mensaje-vacio">
+                        No hay apuestas registradas aún.
+                    </div>
                 </div>
             </div>
-            <div class="table-container">
-                <table id="tablaApuestas">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Tipo de Apuesta</th>
-                            <th>Monto</th>
-                            <th>Carreras</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaBody">
-                        <!-- Las apuestas se agregarán aquí dinámicamente -->
-                    </tbody>
-                </table>
-                <div id="mensajeVacio" class="mensaje-vacio">
-                    No hay apuestas registradas aún.
-                </div>
-            </div>
-        </div>
         </div>
     </div>
 
@@ -86,5 +88,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
 </body>
-</html>
 
+</html>
