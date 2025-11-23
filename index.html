@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Apuestas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏇 Gestión de Apuestas</h1>
+        </header>
+
+        <div class="main-content">
+            <div class="form-section">
+                <h2>Nueva Apuesta</h2>
+                <form id="apuestaForm">
+                    <div class="form-group">
+                        <label for="tipoApuesta">Tipo de Apuesta:</label>
+                        <select id="tipoApuesta" required>
+                            <option value="">Seleccionar apuesta</option>
+                            <option value="exa">EXA</option>
+                            <option value="tri">TRI</option>
+                            <option value="imp">IMP</option>
+                            <option value="cua">CUA</option>
+                            <option value="dob">DOB</option>
+                            <option value="tpl">TPL</option>
+                            <option value="qtn">QTN</option>
+                            <option value="qtp">QTP</option>
+                            <option value="cad">CAD</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="monto">Monto:</label>
+                        <input type="number" id="monto" min="1" step="0.01" placeholder="Ejemplo: 200" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carreras">Carreras:</label>
+                        <input type="text" id="carreras" placeholder="Ejemplos: 1,2,3,5 o 1-10 o all" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Agregar Apuesta</button>
+                </form>
+            </div>
+
+            <div class="table-section">
+            <div class="table-header">
+                <h2>Apuestas Registradas</h2>
+                <div class="header-buttons">
+                    <button id="btnExportarPDF" class="btn-exportar" onclick="exportarAPDF()">
+                        📄 Guardar en PDF
+                    </button>
+                    <button id="btnEliminarTodo" class="btn-eliminar-todo" onclick="eliminarTodo()">
+                        🗑️ Eliminar Todo
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="tablaApuestas">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tipo de Apuesta</th>
+                            <th>Monto</th>
+                            <th>Carreras</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaBody">
+                        <!-- Las apuestas se agregarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+                <div id="mensajeVacio" class="mensaje-vacio">
+                    No hay apuestas registradas aún.
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Librería jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
