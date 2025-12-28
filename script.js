@@ -335,10 +335,10 @@ function actualizarMensajeVacio() {
 
 // Función para limpiar el formulario
 function limpiarFormulario() {
+    carrerasInput.value = '';
     tipoApuestaSelect.value = '';
     montoInput.value = '';
-    carrerasInput.value = '';
-    tipoApuestaSelect.focus();
+    carrerasInput.focus();
 }
 
 // Cargar apuestas guardadas del localStorage al cargar la página
