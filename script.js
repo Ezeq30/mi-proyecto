@@ -484,7 +484,7 @@ window.exportarAPDF = function() {
     // Título
     doc.setFontSize(20);
     doc.setTextColor(1, 84, 64); // #015440
-    doc.text('Gestión de Apuestas Computos', 14, 20);
+    doc.text('Minimos Especiales', 14, 20);
     
     // Fecha
     doc.setFontSize(10);
@@ -499,17 +499,16 @@ window.exportarAPDF = function() {
     doc.text(`Fecha: ${fecha}`, 14, 30);
     
     // Preparar datos para la tabla
-    const datos = apuestasOrdenadas.map((apuesta, index) => [
-        index + 1,
+    const datos = apuestasOrdenadas.map((apuesta) => [
+        apuesta.carreras,
         formatearTipoApuesta(apuesta.tipo),
-        `$${apuesta.monto.toFixed(2)}`,
-        apuesta.carreras
+        `$${apuesta.monto.toFixed(2)}`
     ]);
     
     // Crear tabla
     doc.autoTable({
         startY: 40,
-        head: [['#', 'Tipo de Apuesta', 'Monto', 'Carreras']],
+        head: [['Carreras', 'Tipo de Apuesta', 'Monto']],
         body: datos,
         theme: 'striped',
         headStyles: {
@@ -518,14 +517,13 @@ window.exportarAPDF = function() {
             fontStyle: 'bold'
         },
         styles: {
-            fontSize: 10,
-            cellPadding: 5
+            fontSize: 12,
+            cellPadding: 2
         },
         columnStyles: {
-            0: { cellWidth: 15 },
+            0: { cellWidth: 'auto' },
             1: { cellWidth: 50 },
-            2: { cellWidth: 40 },
-            3: { cellWidth: 'auto' }
+            2: { cellWidth: 40 }
         }
     });
     
