@@ -505,6 +505,19 @@ window.exportarAPDF = function() {
         `$${apuesta.monto.toFixed(2)}`
     ]);
     
+    // Calcular el ancho máximo necesario para la columna de carreras
+    doc.setFontSize(12);
+    let maxCarrerasWidth = doc.getTextWidth('Carreras'); // Ancho del encabezado
+    apuestasOrdenadas.forEach((apuesta) => {
+        const width = doc.getTextWidth(apuesta.carreras);
+        if (width > maxCarrerasWidth) {
+            maxCarrerasWidth = width;
+        }
+    });
+    // Agregar padding generoso (aproximadamente 12mm para padding izquierdo y derecho)
+    // para asegurar que el contenido no se divida en múltiples líneas
+    const anchoCarreras = Math.max(maxCarrerasWidth + 12, 40);
+    
     // Crear tabla
     doc.autoTable({
         startY: 40,
@@ -514,16 +527,34 @@ window.exportarAPDF = function() {
         headStyles: {
             fillColor: [1, 84, 64], // #015440
             textColor: 255,
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            lineWidth: 0.1,
+            lineColor: [0, 0, 0]
         },
         styles: {
             fontSize: 12,
-            cellPadding: 2
+            cellPadding: 2,
+            lineWidth: 0.1,
+            lineColor: [0, 0, 0]
         },
         columnStyles: {
-            0: { cellWidth: 'auto' },
-            1: { cellWidth: 50 },
-            2: { cellWidth: 40 }
+            0: { 
+                cellWidth: anchoCarreras, 
+                halign: 'left'
+            },
+            1: { cellWidth: 40, halign: 'left' },
+            2: { cellWidth: 40, halign: 'left' }
+        },
+        didParseCell: function(data) {
+            // Para la columna de carreras (columna 0), asegurar que el ancho sea suficiente
+            // y evitar el linebreak forzando el ancho calculado
+            if (data.column.index === 0) {
+                data.cell.styles.cellWidth = anchoCarreras;
+                // Desactivar el linebreak estableciendo un ancho mínimo muy grande
+                if (data.cell.text && data.cell.text.length > 0) {
+                    data.cell.styles.minCellWidth = anchoCarreras;
+                }
+            }
         }
     });
     
