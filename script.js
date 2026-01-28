@@ -1,5 +1,7 @@
 // Array para almacenar todas las apuestas
 let apuestas = [];
+// ID de la última apuesta agregada o modificada (para resaltar en la tabla)
+let ultimaApuestaId = null;
 
 // Referencias a elementos del DOM
 const form = document.getElementById('apuestaForm');
@@ -291,6 +293,11 @@ function combinarCarreras(carreras1, carreras2) {
 function agregarApuestaATabla(apuesta, index) {
     const fila = document.createElement('tr');
     
+    // Marcar visualmente la última apuesta agregada/modificada
+    if (apuesta.id && apuesta.id === ultimaApuestaId) {
+        fila.classList.add('ultima-apuesta');
+    }
+    
     fila.innerHTML = `
         <td>${index + 1}</td>
         <td><strong>${formatearTipoApuesta(apuesta.tipo)}</strong></td>
@@ -430,14 +437,25 @@ form.addEventListener('submit', function(e) {
             carrerasFormateadas
         );
         apuestas[apuestaExistente].carreras = carrerasCombinadas;
+        
+        // Asegurarnos de que tenga un ID (por si viene de datos antiguos sin ID)
+        if (!apuestas[apuestaExistente].id) {
+            apuestas[apuestaExistente].id = Date.now();
+        }
+        // Registrar esta apuesta como la última modificada
+        ultimaApuestaId = apuestas[apuestaExistente].id;
     } else {
         // Si no existe, crear nueva apuesta
         const nuevaApuesta = {
             tipo: tipo,
             monto: monto,
-            carreras: carrerasFormateadas
+            carreras: carrerasFormateadas,
+            // ID único para poder identificar la última apuesta
+            id: Date.now()
         };
         apuestas.push(nuevaApuesta);
+        // Registrar esta nueva apuesta como la última agregada
+        ultimaApuestaId = nuevaApuesta.id;
     }
     
     // Ordenar apuestas según el orden personalizado antes de guardar
@@ -574,3 +592,18 @@ window.exportarAPDF = function() {
 // Cargar apuestas al iniciar
 cargarApuestasGuardadas();
 
+
+
+
+///funcion para que david no pague 2 veces la reserva 
+
+const david = function(){
+    let reserva = true
+    let pago =true 
+    let colo = cancela 
+
+    if(david == pago){
+        console.log("ya no paga mas ")
+    }
+    return colo 
+}
