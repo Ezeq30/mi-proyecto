@@ -8,7 +8,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #015440 0%, #001b14 100%);
     min-height: 100vh;
-    padding: 15px;
+    padding: 8px;
     color: #333;
 }
 
@@ -24,7 +24,7 @@ body {
 header {
     background: linear-gradient(135deg, #015440 0%, #001b14 100%);
     color: white;
-    padding: 10px;
+    padding: 6px;
     text-align: center;
 }
 
@@ -32,20 +32,20 @@ header h1 {
     font-size: 1.8em;
     font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    padding: 5px;
+    padding: 3px;
     margin: 0;
 }
 
 .main-content {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
+    gap: 12px;
+    padding: 10px;
 }
 
 .content-row {
     display: flex;
-    gap: 20px;
+    gap: 12px;
 }
 
 .content-row > .form-section {
@@ -62,7 +62,7 @@ header h1 {
 
 .form-section {
     flex: 0 0 350px;
-    padding: 20px;
+    padding: 12px;
     background: #f8f9fa;
     border-radius: 10px;
     border: 1px solid #e0e0e0;
@@ -70,14 +70,14 @@ header h1 {
 
 .form-section h2 {
     color: #015440;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-size: 1.3em;
 }
 
 #apuestaForm {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .form-group {
@@ -94,7 +94,7 @@ header h1 {
 
 .form-group select,
 .form-group input {
-    padding: 8px 10px;
+    padding: 6px 8px;
     border: 2px solid #ddd;
     border-radius: 6px;
     font-size: 0.9em;
@@ -113,7 +113,7 @@ header h1 {
     background: linear-gradient(135deg, #015440 0%, #001b14 100%);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px;
     font-size: 0.95em;
     font-weight: 600;
     border-radius: 6px;
@@ -133,14 +133,14 @@ header h1 {
 
 .table-section {
     flex: 1;
-    padding: 20px;
+    padding: 12px;
     background: #f8f9fa;
     border-radius: 10px;
     border: 1px solid #e0e0e0;
 }
 
 .bloqueadas-section {
-    margin-top: 20px;
+    margin-top: 12px;
     background: #fff3e0;
     border: 2px solid #ff9800;
 }
@@ -149,7 +149,7 @@ header h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 }
 
 .table-section h2 {
@@ -228,7 +228,7 @@ thead {
 }
 
 thead th {
-    padding: 10px;
+    padding: 6px;
     text-align: left;
     font-weight: 600;
     font-size: 0.85em;
@@ -253,7 +253,7 @@ tbody tr:last-child {
 }
 
 tbody td {
-    padding: 10px;
+    padding: 6px;
     color: #555;
     font-size: 0.9em;
 }
@@ -276,7 +276,7 @@ tbody td {
 
 .mensaje-vacio {
     text-align: center;
-    padding: 20px;
+    padding: 12px;
     color: #999;
     font-size: 0.95em;
     display: none;

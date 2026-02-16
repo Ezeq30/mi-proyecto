@@ -574,12 +574,12 @@ window.exportarAPDF = function() {
     const apuestasOrdenadas = [...apuestas].sort(compararApuestas);
     
     // Título
-    doc.setFontSize(20);
+    doc.setFontSize(18);
     doc.setTextColor(1, 84, 64); // #015440
-    doc.text('Minimos Especiales', 14, 20);
+    doc.text('Minimos Especiales', 10, 15);
     
     // Fecha
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
     const fecha = new Date().toLocaleDateString('es-ES', {
         year: 'numeric',
@@ -588,7 +588,7 @@ window.exportarAPDF = function() {
         hour: '2-digit',
         minute: '2-digit'
     });
-    doc.text(`Fecha: ${fecha}`, 14, 30);
+    doc.text(`Fecha: ${fecha}`, 10, 22);
     
     // Preparar datos para la tabla
     const datos = apuestasOrdenadas.map((apuesta) => [
@@ -598,7 +598,7 @@ window.exportarAPDF = function() {
     ]);
     
     // Calcular el ancho máximo necesario para la columna de carreras
-    doc.setFontSize(12);
+    doc.setFontSize(11);
     let maxCarrerasWidth = doc.getTextWidth('Carreras'); // Ancho del encabezado
     apuestasOrdenadas.forEach((apuesta) => {
         const width = doc.getTextWidth(apuesta.carreras);
@@ -606,13 +606,12 @@ window.exportarAPDF = function() {
             maxCarrerasWidth = width;
         }
     });
-    // Agregar padding generoso (aproximadamente 12mm para padding izquierdo y derecho)
-    // para asegurar que el contenido no se divida en múltiples líneas
-    const anchoCarreras = Math.max(maxCarrerasWidth + 12, 40);
+    // Reducir padding para hacer más compacto
+    const anchoCarreras = Math.max(maxCarrerasWidth + 6, 35);
     
     // Crear tabla
     doc.autoTable({
-        startY: 40,
+        startY: 28,
         head: [['Carreras', 'Tipo de Apuesta', 'Monto']],
         body: datos,
         theme: 'striped',
@@ -624,8 +623,8 @@ window.exportarAPDF = function() {
             lineColor: [0, 0, 0]
         },
         styles: {
-            fontSize: 12,
-            cellPadding: 2,
+            fontSize: 10,
+            cellPadding: 1.5,
             lineWidth: 0.1,
             lineColor: [0, 0, 0]
         },
@@ -651,12 +650,12 @@ window.exportarAPDF = function() {
     });
     
     // Mostrar solo el total de apuestas (sin monto total)
-    let finalY = doc.lastAutoTable.finalY + 10;
+    let finalY = doc.lastAutoTable.finalY + 6;
     
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
     doc.setFont(undefined, 'bold');
-    doc.text(`Total de Apuestas: ${apuestas.length}`, 14, finalY);
+    doc.text(`Total de Apuestas: ${apuestas.length}`, 10, finalY);
     
     // Filtrar apuestas bloqueadas (mayores a 1000)
     const apuestasBloqueadas = apuestasOrdenadas.filter(apuesta => apuesta.monto > 1000);
@@ -666,16 +665,16 @@ window.exportarAPDF = function() {
         // Verificar si necesitamos una nueva página
         if (finalY > 250) {
             doc.addPage();
-            finalY = 20;
+            finalY = 15;
         } else {
-            finalY += 15; // Espacio antes del título
+            finalY += 10; // Espacio antes del título
         }
         
         // Título de la tabla de bloqueadas
-        doc.setFontSize(16);
+        doc.setFontSize(14);
         doc.setTextColor(255, 152, 0); // Color naranja para destacar
         doc.setFont(undefined, 'bold');
-        doc.text('Bloquear apuestas de Palermo', 14, finalY);
+        doc.text('Bloquear apuestas de Palermo', 10, finalY);
         
         // Preparar datos para la tabla de bloqueadas
         const datosBloqueadas = apuestasBloqueadas.map((apuesta) => [
@@ -685,7 +684,7 @@ window.exportarAPDF = function() {
         ]);
         
         // Calcular el ancho máximo necesario para la columna de carreras en la tabla de bloqueadas
-        doc.setFontSize(12);
+        doc.setFontSize(11);
         let maxCarrerasWidthBloqueadas = doc.getTextWidth('Carreras');
         apuestasBloqueadas.forEach((apuesta) => {
             const width = doc.getTextWidth(apuesta.carreras);
@@ -693,11 +692,11 @@ window.exportarAPDF = function() {
                 maxCarrerasWidthBloqueadas = width;
             }
         });
-        const anchoCarrerasBloqueadas = Math.max(maxCarrerasWidthBloqueadas + 12, 40);
+        const anchoCarrerasBloqueadas = Math.max(maxCarrerasWidthBloqueadas + 6, 35);
         
         // Crear tabla de bloqueadas
         doc.autoTable({
-            startY: finalY + 5,
+            startY: finalY + 4,
             head: [['Carreras', 'Tipo de Apuesta', 'Monto']],
             body: datosBloqueadas,
             theme: 'striped',
@@ -709,8 +708,8 @@ window.exportarAPDF = function() {
                 lineColor: [0, 0, 0]
             },
             styles: {
-                fontSize: 12,
-                cellPadding: 2,
+                fontSize: 10,
+                cellPadding: 1.5,
                 lineWidth: 0.1,
                 lineColor: [0, 0, 0]
             },
@@ -733,11 +732,11 @@ window.exportarAPDF = function() {
         });
         
         // Mostrar total de apuestas bloqueadas
-        finalY = doc.lastAutoTable.finalY + 10;
-        doc.setFontSize(12);
+        finalY = doc.lastAutoTable.finalY + 6;
+        doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);
         doc.setFont(undefined, 'bold');
-        doc.text(`Total de Apuestas a Bloquear: ${apuestasBloqueadas.length}`, 14, finalY);
+        doc.text(`Total de Apuestas a Bloquear: ${apuestasBloqueadas.length}`, 10, finalY);
     }
     
     // Guardar PDF
