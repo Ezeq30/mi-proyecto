@@ -10,6 +10,8 @@ const montoInput = document.getElementById('monto');
 const carrerasInput = document.getElementById('carreras');
 const tablaBody = document.getElementById('tablaBody');
 const mensajeVacio = document.getElementById('mensajeVacio');
+const tablaBloqueadasBody = document.getElementById('tablaBloqueadasBody');
+const mensajeVacioBloqueadas = document.getElementById('mensajeVacioBloqueadas');
 
 // Función para formatear el tipo de apuesta (mayúsculas)
 function formatearTipoApuesta(tipo) {
@@ -314,12 +316,38 @@ function agregarApuestaATabla(apuesta, index) {
     actualizarMensajeVacio();
 }
 
+// Función para agregar una apuesta a la tabla de bloqueadas (mayores a 1000)
+function agregarApuestaATablaBloqueadas(apuesta, indexBloqueadas, indexOriginal) {
+    const fila = document.createElement('tr');
+    
+    // Marcar visualmente la última apuesta agregada/modificada
+    if (apuesta.id && apuesta.id === ultimaApuestaId) {
+        fila.classList.add('ultima-apuesta');
+    }
+    
+    fila.innerHTML = `
+        <td>${indexBloqueadas + 1}</td>
+        <td><strong>${formatearTipoApuesta(apuesta.tipo)}</strong></td>
+        <td>$${apuesta.monto.toFixed(2)}</td>
+        <td>${apuesta.carreras}</td>
+        <td>
+            <button class="btn-eliminar" onclick="eliminarApuesta(${indexOriginal})">
+                Eliminar
+            </button>
+        </td>
+    `;
+    
+    tablaBloqueadasBody.appendChild(fila);
+    actualizarMensajeVacioBloqueadas();
+}
+
 // Función para actualizar la tabla completa
 function actualizarTabla() {
     tablaBody.innerHTML = '';
     
     if (apuestas.length === 0) {
         actualizarMensajeVacio();
+        actualizarTablaBloqueadas();
         return;
     }
     
@@ -329,6 +357,39 @@ function actualizarTabla() {
     apuestasOrdenadas.forEach((apuesta, index) => {
         agregarApuestaATabla(apuesta, index);
     });
+    
+    // Actualizar también la tabla de bloqueadas
+    actualizarTablaBloqueadas();
+}
+
+// Función para actualizar la tabla de apuestas bloqueadas (mayores a 1000)
+function actualizarTablaBloqueadas() {
+    tablaBloqueadasBody.innerHTML = '';
+    
+    // Filtrar apuestas mayores a 1000
+    const apuestasBloqueadas = apuestas.filter(apuesta => apuesta.monto > 1000);
+    
+    if (apuestasBloqueadas.length === 0) {
+        actualizarMensajeVacioBloqueadas();
+        return;
+    }
+    
+    // Ordenar todas las apuestas primero para obtener los índices correctos
+    const apuestasOrdenadas = [...apuestas].sort(compararApuestas);
+    
+    // Filtrar y ordenar las bloqueadas
+    const bloqueadasOrdenadas = apuestasBloqueadas.sort(compararApuestas);
+    
+    bloqueadasOrdenadas.forEach((apuesta, indexBloqueadas) => {
+        // Encontrar el índice original en el array ordenado completo
+        const indexOriginal = apuestasOrdenadas.findIndex(a => 
+            a.tipo === apuesta.tipo && 
+            a.monto === apuesta.monto && 
+            a.carreras === apuesta.carreras &&
+            a.id === apuesta.id
+        );
+        agregarApuestaATablaBloqueadas(apuesta, indexBloqueadas, indexOriginal);
+    });
 }
 
 // Función para actualizar el mensaje de tabla vacía
@@ -337,6 +398,16 @@ function actualizarMensajeVacio() {
         mensajeVacio.classList.add('mostrar');
     } else {
         mensajeVacio.classList.remove('mostrar');
+    }
+}
+
+// Función para actualizar el mensaje de tabla vacía de bloqueadas
+function actualizarMensajeVacioBloqueadas() {
+    const apuestasBloqueadas = apuestas.filter(apuesta => apuesta.monto > 1000);
+    if (apuestasBloqueadas.length === 0) {
+        mensajeVacioBloqueadas.classList.add('mostrar');
+    } else {
+        mensajeVacioBloqueadas.classList.remove('mostrar');
     }
 }
 
@@ -357,10 +428,13 @@ function cargarApuestasGuardadas() {
             // Ordenar apuestas según el orden personalizado al cargar
             apuestas.sort(compararApuestas);
             guardarApuestas(); // Guardar el orden
-            actualizarTabla();
+            actualizarTabla(); // Esto también actualizará la tabla de bloqueadas
         } catch (e) {
             console.error('Error al cargar apuestas guardadas:', e);
         }
+    } else {
+        // Si no hay apuestas guardadas, asegurarse de que la tabla de bloqueadas esté vacía
+        actualizarTablaBloqueadas();
     }
 }
 
@@ -377,7 +451,7 @@ window.eliminarApuesta = function(index) {
         
         apuestas.splice(index, 1);
         guardarApuestas();
-        actualizarTabla();
+        actualizarTabla(); // Esto también actualizará la tabla de bloqueadas
     }
 };
 
@@ -577,12 +651,94 @@ window.exportarAPDF = function() {
     });
     
     // Mostrar solo el total de apuestas (sin monto total)
-    const finalY = doc.lastAutoTable.finalY + 10;
+    let finalY = doc.lastAutoTable.finalY + 10;
     
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     doc.setFont(undefined, 'bold');
     doc.text(`Total de Apuestas: ${apuestas.length}`, 14, finalY);
+    
+    // Filtrar apuestas bloqueadas (mayores a 1000)
+    const apuestasBloqueadas = apuestasOrdenadas.filter(apuesta => apuesta.monto > 1000);
+    
+    // Si hay apuestas bloqueadas, agregar la segunda tabla
+    if (apuestasBloqueadas.length > 0) {
+        // Verificar si necesitamos una nueva página
+        if (finalY > 250) {
+            doc.addPage();
+            finalY = 20;
+        } else {
+            finalY += 15; // Espacio antes del título
+        }
+        
+        // Título de la tabla de bloqueadas
+        doc.setFontSize(16);
+        doc.setTextColor(255, 152, 0); // Color naranja para destacar
+        doc.setFont(undefined, 'bold');
+        doc.text('Bloquear apuestas de Palermo', 14, finalY);
+        
+        // Preparar datos para la tabla de bloqueadas
+        const datosBloqueadas = apuestasBloqueadas.map((apuesta) => [
+            apuesta.carreras,
+            formatearTipoApuesta(apuesta.tipo),
+            `$${apuesta.monto.toFixed(2)}`
+        ]);
+        
+        // Calcular el ancho máximo necesario para la columna de carreras en la tabla de bloqueadas
+        doc.setFontSize(12);
+        let maxCarrerasWidthBloqueadas = doc.getTextWidth('Carreras');
+        apuestasBloqueadas.forEach((apuesta) => {
+            const width = doc.getTextWidth(apuesta.carreras);
+            if (width > maxCarrerasWidthBloqueadas) {
+                maxCarrerasWidthBloqueadas = width;
+            }
+        });
+        const anchoCarrerasBloqueadas = Math.max(maxCarrerasWidthBloqueadas + 12, 40);
+        
+        // Crear tabla de bloqueadas
+        doc.autoTable({
+            startY: finalY + 5,
+            head: [['Carreras', 'Tipo de Apuesta', 'Monto']],
+            body: datosBloqueadas,
+            theme: 'striped',
+            headStyles: {
+                fillColor: [255, 152, 0], // Color naranja para el encabezado
+                textColor: 255,
+                fontStyle: 'bold',
+                lineWidth: 0.1,
+                lineColor: [0, 0, 0]
+            },
+            styles: {
+                fontSize: 12,
+                cellPadding: 2,
+                lineWidth: 0.1,
+                lineColor: [0, 0, 0]
+            },
+            columnStyles: {
+                0: { 
+                    cellWidth: anchoCarrerasBloqueadas, 
+                    halign: 'left'
+                },
+                1: { cellWidth: 40, halign: 'left' },
+                2: { cellWidth: 40, halign: 'left' }
+            },
+            didParseCell: function(data) {
+                if (data.column.index === 0) {
+                    data.cell.styles.cellWidth = anchoCarrerasBloqueadas;
+                    if (data.cell.text && data.cell.text.length > 0) {
+                        data.cell.styles.minCellWidth = anchoCarrerasBloqueadas;
+                    }
+                }
+            }
+        });
+        
+        // Mostrar total de apuestas bloqueadas
+        finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont(undefined, 'bold');
+        doc.text(`Total de Apuestas a Bloquear: ${apuestasBloqueadas.length}`, 14, finalY);
+    }
     
     // Guardar PDF
     const nombreArchivo = `Apuestas_${new Date().toISOString().split('T')[0]}.pdf`;

@@ -38,8 +38,26 @@ header h1 {
 
 .main-content {
     display: flex;
+    flex-direction: column;
     gap: 20px;
     padding: 20px;
+}
+
+.content-row {
+    display: flex;
+    gap: 20px;
+}
+
+.content-row > .form-section {
+    flex: 0 0 350px;
+}
+
+.content-row > .table-section {
+    flex: 1;
+}
+
+.bloqueadas-section {
+    width: 100%;
 }
 
 .form-section {
@@ -119,6 +137,12 @@ header h1 {
     background: #f8f9fa;
     border-radius: 10px;
     border: 1px solid #e0e0e0;
+}
+
+.bloqueadas-section {
+    margin-top: 20px;
+    background: #fff3e0;
+    border: 2px solid #ff9800;
 }
 
 .table-header {
@@ -268,11 +292,11 @@ tbody:empty ~ .mensaje-vacio {
 
 /* Responsive */
 @media (max-width: 968px) {
-    .main-content {
+    .content-row {
         flex-direction: column;
     }
 
-    .form-section {
+    .content-row > .form-section {
         flex: 1;
     }
 }
