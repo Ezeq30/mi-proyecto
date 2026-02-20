@@ -676,18 +676,68 @@ window.exportarAPDF = function() {
         doc.setFont(undefined, 'bold');
         doc.text('Bloquear apuestas de Palermo', 10, finalY);
         
-        // Preparar datos para la tabla de bloqueadas
-        const datosBloqueadas = apuestasBloqueadas.map((apuesta) => [
-            apuesta.carreras,
-            formatearTipoApuesta(apuesta.tipo),
-            `$${apuesta.monto.toFixed(2)}`
-        ]);
+        // Preparar y ordenar datos para la tabla de bloqueadas
+        const apuestasBloqueadasProcesadas = apuestasBloqueadas.map((apuesta) => {
+            const carrerasArray = obtenerCarrerasArray(apuesta.carreras);
+            let carrerasSeparadas;
+            let primerNumeroCarrera;
+
+            if (carrerasArray === 'ALL') {
+                // Mantener ALL como texto especial, pero ponerlo primero
+                carrerasSeparadas = 'ALL';
+                primerNumeroCarrera = 0;
+            } else if (Array.isArray(carrerasArray) && carrerasArray.length > 0) {
+                // Todas las carreras separadas y ordenadas ascendentemente
+                carrerasSeparadas = carrerasArray.join(',');
+                primerNumeroCarrera = carrerasArray[0];
+            } else {
+                // Caso de fallback si algo raro pasa con el parseo
+                carrerasSeparadas = apuesta.carreras;
+                primerNumeroCarrera = 9999;
+            }
+
+            return {
+                ...apuesta,
+                carrerasSeparadas,
+                primerNumeroCarrera
+            };
+        });
+
+        // Ordenar por número de carrera (primer número de la lista)
+        apuestasBloqueadasProcesadas.sort((a, b) => a.primerNumeroCarrera - b.primerNumeroCarrera);
+
+        // Armar datos para la tabla usando las carreras separadas
+        // Cada carrera va en su propio renglón
+        const datosBloqueadas = [];
+        apuestasBloqueadasProcesadas.forEach((apuesta) => {
+            if (apuesta.carrerasSeparadas === 'ALL') {
+                // Caso especial: una sola fila con ALL
+                datosBloqueadas.push([
+                    'ALL',
+                    formatearTipoApuesta(apuesta.tipo),
+                    `$${apuesta.monto.toFixed(2)}`
+                ]);
+            } else {
+                const numerosCarrera = apuesta.carrerasSeparadas
+                    .split(',')
+                    .map(c => c.trim())
+                    .filter(c => c !== '');
+
+                numerosCarrera.forEach((carrera) => {
+                    datosBloqueadas.push([
+                        carrera,
+                        formatearTipoApuesta(apuesta.tipo),
+                        `$${apuesta.monto.toFixed(2)}`
+                    ]);
+                });
+            }
+        });
         
         // Calcular el ancho máximo necesario para la columna de carreras en la tabla de bloqueadas
         doc.setFontSize(11);
         let maxCarrerasWidthBloqueadas = doc.getTextWidth('Carreras');
-        apuestasBloqueadas.forEach((apuesta) => {
-            const width = doc.getTextWidth(apuesta.carreras);
+        apuestasBloqueadasProcesadas.forEach((apuesta) => {
+            const width = doc.getTextWidth(apuesta.carrerasSeparadas);
             if (width > maxCarrerasWidthBloqueadas) {
                 maxCarrerasWidthBloqueadas = width;
             }
@@ -731,12 +781,12 @@ window.exportarAPDF = function() {
             }
         });
         
-        // Mostrar total de apuestas bloqueadas
+        // Mostrar total de apuestas bloqueadas (contar renglones, no apuestas originales)
         finalY = doc.lastAutoTable.finalY + 6;
         doc.setFontSize(10);
         doc.setTextColor(0, 0, 0);
         doc.setFont(undefined, 'bold');
-        doc.text(`Total de Apuestas a Bloquear: ${apuestasBloqueadas.length}`, 10, finalY);
+        doc.text(`Total de Apuestas a Bloquear: ${datosBloqueadas.length}`, 10, finalY);
     }
     
     // Guardar PDF
