@@ -56,10 +56,6 @@ header h1 {
     flex: 1;
 }
 
-.bloqueadas-section {
-    width: 100%;
-}
-
 .form-section {
     flex: 0 0 350px;
     padding: 12px;
@@ -137,12 +133,6 @@ header h1 {
     background: #f8f9fa;
     border-radius: 10px;
     border: 1px solid #e0e0e0;
-}
-
-.bloqueadas-section {
-    margin-top: 12px;
-    background: #fff3e0;
-    border: 2px solid #ff9800;
 }
 
 .table-header {
